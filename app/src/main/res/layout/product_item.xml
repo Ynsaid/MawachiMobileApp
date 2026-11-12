@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="164.5dp"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@android:color/white"
+    app:cardCornerRadius="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Sheep Image -->
+        <ImageView
+            android:id="@+id/sheepImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sheep" />
+
+        <!-- Title + Price -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/sheepName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="كبش اولاد جلال"
+
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/olive_green"
+                android:fontFamily="@font/changa_bold"
+                 />
+
+            <TextView
+                android:id="@+id/sheepPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="50000 دج"
+                android:textSize="16sp"
+
+                android:textColor="@android:color/black"
+
+                android:fontFamily="@font/changa_regular" />
+        </LinearLayout>
+        <!-- Attributes (location, weight, age, sell price) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end |center"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/sheepLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="واد سوف"
+                    android:textColor="@android:color/darker_gray"
+                    android:fontFamily="@font/changa_regular" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/location_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end | center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/sheepWeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="60 كغ"
+                    android:textColor="@android:color/darker_gray"
+                    android:fontFamily="@font/changa_regular" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/weight_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end |center"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/sheepAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8 أشهر"
+                    android:textColor="@android:color/darker_gray"
+                    android:fontFamily="@font/changa_regular" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/age_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end | center">
+
+                <TextView
+                    android:id="@+id/sheepAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5000 رأس"
+                    android:textColor="@android:color/darker_gray"
+                    android:fontFamily="@font/changa_regular" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/amount_icon" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

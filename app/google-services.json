@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719593285848",
+    "project_id": "mawachi-dd075",
+    "storage_bucket": "mawachi-dd075.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719593285848:android:cc1d64043215f7cdaa8fad",
+        "android_client_info": {
+          "package_name": "com.example.mawachiapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYzJ9v5pDKA5x2a_mXepm9stWieRYVmH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

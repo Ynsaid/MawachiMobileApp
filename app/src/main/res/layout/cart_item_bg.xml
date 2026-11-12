@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/itemImg"
+        android:layout_width="95dp"
+        android:layout_height="85dp"
+        android:src="@drawable/sheep_img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/changa_medium"
+        android:text="كباش ولاد جلال"
+        android:textColor="@color/grey_black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/itemImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/itemAgeWeightLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/changa_medium"
+        android:text="واد سوف - 67 كغ - 8 اشهر"
+        android:textColor="@color/grey"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/itemImg"
+        app:layout_constraintTop_toBottomOf="@id/itemName"
+
+        />
+
+    <TextView
+        android:id="@+id/itemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/changa_bold"
+        android:text="5000 د.ج"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/itemImg"
+        app:layout_constraintTop_toBottomOf="@id/itemAgeWeightLocation" />
+    <!-- Container for +, quantity, and - buttons -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/quantityContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Plus Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/plusBtn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_rounded_button"
+            android:backgroundTint="@color/soft_white"
+            android:text="+"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Quantity Text -->
+        <TextView
+            android:id="@+id/quantityTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:fontFamily="@font/changa_bold"
+            android:text="14"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/minusBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plusBtn" />
+
+        <!-- Minus Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/minusBtn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_rounded_button"
+            android:backgroundTint="@color/soft_white"
+            android:text="−"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

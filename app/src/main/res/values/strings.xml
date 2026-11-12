@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">MawachiApp</string>
+    <string name="app_name_ar">مواشي</string>
+    <string name="email">إيميل</string>
+    <string name="password">كلمة السر</string>
+    <string name="passwordr">إعادة كلمة السر</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="no_account">لا تملك حساب؟</string>
+    <string name="have_account"> تملك حساب؟</string>
+    <string name="create_acc">إنشاء حساب </string>
+    <string name="number">رقم الهاتف</string>
+    <string name="complete_name">الاسم الكامل</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_page">الصفحة الرئيسية</string>
+    <string name="settings_page">الاعدادات</string>
+    <string name="search_txt">إبحث عن ماشيتك...</string>
+    <string name="privacy">سياسة الخصوصية</string>
+    <string name="about_us">حولنا</string>
+    <string name="description">الوصف</string>
+    <string name="amount">الكمية</string>
+    <string name="add_to_cart">اضف الى السلة</string>
+
+
+</resources>
