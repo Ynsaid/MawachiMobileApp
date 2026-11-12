@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/soft_white"
-    tools:context=".Settings">
+    tools:context=".fragments.Settings">
 
     <!-- Fixed Header -->
     <TextView

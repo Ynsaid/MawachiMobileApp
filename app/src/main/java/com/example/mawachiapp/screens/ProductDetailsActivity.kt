@@ -1,12 +1,9 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.screens
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.mawachiapp.classes.Item
 import com.example.mawachiapp.databinding.ActivityProductDetailsBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

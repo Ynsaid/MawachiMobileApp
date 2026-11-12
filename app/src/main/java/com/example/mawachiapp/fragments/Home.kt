@@ -1,4 +1,4 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.fragments
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mawachiapp.classes.Animal
+import com.example.mawachiapp.adapters.AnimalAdapter
 import com.example.mawachiapp.databinding.FragmentHomeBinding
 import com.google.firebase.firestore.FirebaseFirestore
 

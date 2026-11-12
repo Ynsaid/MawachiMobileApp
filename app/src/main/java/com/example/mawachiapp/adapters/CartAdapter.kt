@@ -1,4 +1,4 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mawachiapp.classes.Item
+import com.example.mawachiapp.R
 
 class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
@@ -17,8 +19,8 @@ class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<Cart
         val itemPrice: TextView = itemView.findViewById(R.id.itemPrice)
         val itemQuantity: TextView = itemView.findViewById(R.id.quantityTxt)
         val itemImg: ImageView = itemView.findViewById(R.id.itemImg)
-        val itemQuantityPlus :AppCompatButton = itemView.findViewById(R.id.plusBtn)
-        val itemQuantityMinus :AppCompatButton = itemView.findViewById(R.id.minusBtn)
+        val itemQuantityPlus : AppCompatButton = itemView.findViewById(R.id.plusBtn)
+        val itemQuantityMinus : AppCompatButton = itemView.findViewById(R.id.minusBtn)
 
     }
 

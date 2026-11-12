@@ -1,17 +1,16 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.example.mawachiapp.R
 import com.example.mawachiapp.databinding.FragmentSettingsBinding
+import com.example.mawachiapp.screens.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,7 +27,7 @@ class Settings : Fragment() {
 
         // logout btn with dialog confirmation
         binding.logoutBtn.setOnClickListener {
-            val builder = android.app.AlertDialog.Builder(requireContext()) // Use requireContext() instead of context
+            val builder = AlertDialog.Builder(requireContext()) // Use requireContext() instead of context
             builder
                 .setMessage("هل تريد تسجيل الخروج من الحساب؟")
                 .setPositiveButton("تسجيل الخروج") { _, _ ->
@@ -43,12 +42,14 @@ class Settings : Fragment() {
 
             val dialog = builder.create()
             dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.soft_red))
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.soft_red))
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.black))
         }
         // Delete account btn with dialog confirmation
         binding.deleteAccBtn.setOnClickListener {
-            val builder = android.app.AlertDialog.Builder(requireContext())
+            val builder = AlertDialog.Builder(requireContext())
             builder.setMessage("Do you want to remove your account ? ")
                 .setMessage("سيودي ذلك الى حذف جميع بياناتك الشخضية المتعلقة بالحساب")
                 .setPositiveButton("حذف الحساب") { _, _ ->
@@ -69,8 +70,10 @@ class Settings : Fragment() {
                 }
             val dialog = builder.create()
             dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.soft_red))
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.soft_red))
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.black))
         }
 
         // get name of user

@@ -1,14 +1,15 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.screens
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mawachiapp.classes.Product
+import com.example.mawachiapp.adapters.ProductAdapter
 import com.example.mawachiapp.databinding.ActivityListOfAnimalsBinding
 
 class ListOfAnimalsActivity : AppCompatActivity() {

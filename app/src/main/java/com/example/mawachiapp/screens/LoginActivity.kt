@@ -1,12 +1,10 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.screens
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.mawachiapp.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -23,7 +21,7 @@ class LoginActivity : AppCompatActivity() {
         }
         auth = FirebaseAuth.getInstance()
         if(auth.currentUser != null){
-            startActivity(Intent(this,HomeActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
             return
         }
@@ -54,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToRegister(){
-        val intent = Intent(this,SignupActivity::class.java)
+        val intent = Intent(this, SignupActivity::class.java)
         startActivity(intent)
     }
 }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@color/soft_white"
-    tools:context=".ListOfAnimalsActivity">
+    tools:context=".screens.ListOfAnimalsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"

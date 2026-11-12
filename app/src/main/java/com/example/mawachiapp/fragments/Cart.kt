@@ -1,4 +1,4 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mawachiapp.classes.Item
+import com.example.mawachiapp.adapters.CartAdapter
 import com.example.mawachiapp.databinding.FragmentCartBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

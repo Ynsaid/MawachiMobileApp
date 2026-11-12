@@ -1,4 +1,4 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.classes
 
 import java.io.Serializable
 

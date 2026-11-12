@@ -1,4 +1,4 @@
-package com.example.mawachiapp
+package com.example.mawachiapp.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,6 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mawachiapp.classes.Product
+import com.example.mawachiapp.screens.ProductDetailsActivity
+import com.example.mawachiapp.R
 
 class ProductAdapter(private var products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
