@@ -83,14 +83,9 @@ class Settings : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 val name = document.getString("name")
-                val email = document.getString("email")
-                val number = document.getString("number")
-
                 binding.nameOfUser.text = name
+            }
 
-            }
-            .addOnFailureListener { exception ->
-            }
 
         return binding.root
     }

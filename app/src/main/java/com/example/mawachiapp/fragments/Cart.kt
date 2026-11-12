@@ -15,6 +15,7 @@ import com.example.mawachiapp.adapters.CartAdapter
 import com.example.mawachiapp.databinding.FragmentCartBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.core.content.edit
 
 class Cart : Fragment() {
 
@@ -24,7 +25,7 @@ class Cart : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout and initialize binding
         binding = FragmentCartBinding.inflate(inflater, container, false)
@@ -80,29 +81,20 @@ class Cart : Fragment() {
         binding.loadingSpinner.visibility = View.GONE
     }
 
-    // Save cart items to SharedPreferences
-    private fun saveCartItems() {
-        val sharedPreferences = requireContext().getSharedPreferences("cart", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(cartItems)
-        editor.putString("cart_items", json)
-        editor.apply()
-    }
     // Attach swipe-to-delete functionality
     private fun attachSwipeToDelete() {
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val item = cartItems[position]
+
 
                 // Remove from local list
                 cartItems.removeAt(position)
@@ -110,11 +102,11 @@ class Cart : Fragment() {
 
                 // Save updated list to SharedPreferences
                 val sharedPreferences = requireContext().getSharedPreferences("cart", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                val gson = Gson()
-                val updatedJson = gson.toJson(cartItems)
-                editor.putString("cart_items", updatedJson)
-                editor.apply()
+                sharedPreferences.edit {
+                    val gson = Gson()
+                    val updatedJson = gson.toJson(cartItems)
+                    putString("cart_items", updatedJson)
+                }
 
                 // Refresh UI (spinner optional)
                 updateCartVisibility()

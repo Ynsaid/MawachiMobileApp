@@ -1,5 +1,6 @@
 package com.example.mawachiapp.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -69,6 +70,7 @@ class Home : Fragment() {
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun filterAnimals(query: String) {
         filteredList.clear()
         if (query.isEmpty()) {
