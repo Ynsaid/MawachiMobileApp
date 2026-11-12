@@ -7,23 +7,24 @@ import com.example.mawachiapp.classes.Item
 import com.example.mawachiapp.databinding.ActivityProductDetailsBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.core.content.edit
 
 class ProductDetailsActivity : AppCompatActivity() {
     private lateinit var binding : ActivityProductDetailsBinding
-    private var count = 0;
+    private var count = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.minusButton.setOnClickListener {
             if(count>0){
-                count--;
+                count--
                 binding.quantityText.text = count.toString()
 
             }
         }
         binding.plusButton.setOnClickListener{
-            count++;
+            count++
             binding.quantityText.text = count.toString()
         }
         binding.backBtn.setOnClickListener {
@@ -40,18 +41,21 @@ class ProductDetailsActivity : AppCompatActivity() {
             val age = binding.ageText.text.toString()
             val amount = binding.amountText.text.toString()
             val image = binding.productImage.toString()
+
             // set up the item object
             val item = Item(name, price, quantity, location, weight, age, amount, image)
+
             // add the item to the cart
             val sharedPreferences = getSharedPreferences("cart", MODE_PRIVATE)
-            val editor = sharedPreferences.edit()
-            val gson = Gson()
-            // get the current cart list
-            val cartList = getCartList(sharedPreferences)
-            cartList.add(item)
-            val json = gson.toJson(cartList)
-            editor.putString("cart_items", json)
-            editor.apply()
+
+            sharedPreferences.edit {
+                val gson = Gson()
+                // get the current cart list
+                val cartList = getCartList(sharedPreferences)
+                cartList.add(item)
+                val json = gson.toJson(cartList)
+                putString("cart_items", json)
+            }
         }
 
     }

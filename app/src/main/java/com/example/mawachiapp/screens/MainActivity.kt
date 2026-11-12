@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         mediaPlayer = MediaPlayer.create(this, R.raw.sheep_sound)
         mediaPlayer.start()
-        Handler(getMainLooper()).postDelayed({
+        Handler(mainLooper).postDelayed({
 
             if(mediaPlayer.isPlaying){
                 mediaPlayer.stop()
