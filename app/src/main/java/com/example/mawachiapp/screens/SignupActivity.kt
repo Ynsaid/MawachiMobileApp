@@ -3,78 +3,429 @@ package com.example.mawachiapp.screens
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import com.example.mawachiapp.databinding.ActivitySignupBinding
-import com.google.firebase.Firebase
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.mawachiapp.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 
-class SignupActivity : AppCompatActivity() {
-    private lateinit var binding : ActivitySignupBinding
+class SignupActivity : ComponentActivity() {
+
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
+    private var isLoading by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySignupBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-        binding.signupBtn.setOnClickListener {
+        setContent {
+            MaterialTheme {
+                SignupScreen(
+                    isLoading = isLoading,
+                    onSignup = { name, email, number, password, repeatedPassword ->
 
-            val email = binding.emailEdttxt.text.toString().trim()
+                        val cleanEmail = email.trim()
 
-            val password = binding.pswEdttxt.text.toString()
-            val passwordr = binding.pswrEdttxt.text.toString()
+                        when {
+                            cleanEmail.isEmpty() ||
+                                    password.isEmpty() ||
+                                    repeatedPassword.isEmpty() -> {
+                                showToast("All fields are required")
+                            }
 
-            // Validation
-            if (email.isEmpty() || password.isEmpty() || passwordr.isEmpty()) {
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                            password != repeatedPassword -> {
+                                showToast("Passwords do not match")
+                            }
+
+                            else -> {
+                                registerUser(
+                                    name = name.trim(),
+                                    email = cleanEmail,
+                                    number = number.trim(),
+                                    password = password
+                                )
+                            }
+                        }
+                    },
+                    onLogin = {
+                        openLogin()
+                    }
+                )
             }
-
-            if (password != passwordr) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            registerUser(email, password)
-        }
-        binding.loginAccBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 
-    private fun registerUser(email: String, password: String) {
+    private fun registerUser(
+        name: String,
+        email: String,
+        number: String,
+        password: String
+    ) {
+        if (isLoading) return
+
+        isLoading = true
+
         auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val uid = auth.currentUser?.uid
-                    val db = Firebase.firestore
-                    val userMap = hashMapOf(
-                        "name" to binding.nameEdttxt.text.toString(),
-                        "email" to binding.emailEdttxt.text.toString(),
-                        "number" to binding.numberEdttxt.text.toString()
+            .addOnCompleteListener { task ->
+
+                if (!task.isSuccessful) {
+                    isLoading = false
+
+                    showToast(
+                        "Registration Failed: " +
+                                (task.exception?.localizedMessage ?: "Unknown error")
                     )
-                    db.collection("users").document(uid ?: "").set(userMap)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
-                            // Redirect to home or login
-                            startActivity(Intent(this, LoginActivity::class.java))
-                            finish()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Failed to save user info: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
 
+                    return@addOnCompleteListener
+                }
 
+                val uid = task.result?.user?.uid
+
+                if (uid.isNullOrBlank()) {
+                    isLoading = false
+                    showToast("Unable to retrieve user ID")
+                    return@addOnCompleteListener
+                }
+
+                val userMap = hashMapOf(
+                    "name" to name,
+                    "email" to email,
+                    "number" to number
+                )
+
+                db.collection("users")
+                    .document(uid)
+                    .set(userMap)
+                    .addOnSuccessListener {
+                        isLoading = false
+
+                        showToast("Registration Successful")
+                        openLogin()
+                    }
+                    .addOnFailureListener { exception ->
+                        isLoading = false
+
+                        showToast(
+                            "Account created, but failed to save user info: " +
+                                    exception.localizedMessage
+                        )
+                    }
+            }
+    }
+
+    private fun openLogin() {
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+        )
+        finish()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+}
+
+@Composable
+private fun SignupScreen(
+    isLoading: Boolean,
+    onSignup: (
+        name: String,
+        email: String,
+        number: String,
+        password: String,
+        repeatedPassword: String
+    ) -> Unit,
+    onLogin: () -> Unit
+) {
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var number by rememberSaveable { mutableStateOf("") }
+
+    var password by remember { mutableStateOf("") }
+    var repeatedPassword by remember { mutableStateOf("") }
+
+    val changaBold = FontFamily(Font(R.font.changa_bold))
+    val changaMedium = FontFamily(Font(R.font.changa_medium))
+
+    val oliveGreen = colorResource(R.color.olive_green)
+    val softWhite = colorResource(R.color.soft_white)
+    val white = colorResource(R.color.white)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(softWhite)
+            .safeDrawingPadding()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 24.dp)
+    ) {
+        Spacer(modifier = Modifier.height(62.dp))
+
+        Text(
+            text = stringResource(R.string.create_acc),
+            fontFamily = changaBold,
+            fontSize = 34.sp,
+            color = oliveGreen,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SignupInput(
+            value = name,
+            onValueChange = { name = it },
+            hint = stringResource(R.string.complete_name),
+            enabled = !isLoading
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SignupInput(
+            value = email,
+            onValueChange = { email = it },
+            hint = stringResource(R.string.email),
+            keyboardType = KeyboardType.Email,
+            enabled = !isLoading
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SignupInput(
+                value = number,
+                onValueChange = { number = it },
+                hint = stringResource(R.string.number),
+                keyboardType = KeyboardType.Phone,
+                enabled = !isLoading,
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Image(
+                painter = painterResource(R.drawable.algeria),
+                contentDescription = "علم الجزائر"
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SignupInput(
+            value = password,
+            onValueChange = { password = it },
+            hint = stringResource(R.string.password),
+            isPassword = true,
+            textAlign = TextAlign.End,
+            enabled = !isLoading
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SignupInput(
+            value = repeatedPassword,
+            onValueChange = { repeatedPassword = it },
+            hint = stringResource(R.string.password),
+            isPassword = true,
+            textAlign = TextAlign.End,
+            enabled = !isLoading
+        )
+
+        Spacer(modifier = Modifier.height(62.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(
+                    if (isLoading) {
+                        oliveGreen.copy(alpha = 0.65f)
+                    } else {
+                        oliveGreen
+                    }
+                )
+                .clickable(
+                    enabled = !isLoading,
+                    onClick = {
+                        onSignup(
+                            name,
+                            email,
+                            number,
+                            password,
+                            repeatedPassword
+                        )
+                    }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = white,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.create_acc),
+                    fontFamily = changaBold,
+                    fontSize = 24.sp,
+                    color = white
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.have_account),
+            fontFamily = changaMedium,
+            fontSize = 24.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    enabled = !isLoading,
+                    onClick = onLogin
+                )
+        )
+    }
+}
+
+@Composable
+private fun SignupInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isPassword: Boolean = false,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    val changaMedium = FontFamily(Font(R.font.changa_medium))
+    val oliveGreen = colorResource(R.color.olive_green)
+
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val shape = RoundedCornerShape(10.dp)
+
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        enabled = enabled,
+        singleLine = true,
+        interactionSource = interactionSource,
+        cursorBrush = SolidColor(oliveGreen),
+        textStyle = TextStyle(
+            fontFamily = changaMedium,
+            fontSize = 16.sp,
+            color = Color.Black,
+            textAlign = textAlign
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (isPassword) {
+                KeyboardType.Password
+            } else {
+                keyboardType
+            }
+        ),
+        visualTransformation = if (isPassword) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .clip(shape)
+            .background(Color.White)
+            .border(
+                width = if (isFocused) 2.dp else 1.dp,
+                color = if (isFocused) {
+                    oliveGreen
                 } else {
-                    Toast.makeText(this, "Registration Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    oliveGreen.copy(alpha = 0.35f)
+                },
+                shape = shape
+            )
+            .padding(horizontal = 8.dp),
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (value.isEmpty()) {
+                    Text(
+                        text = hint,
+                        fontFamily = changaMedium,
+                        fontSize = 16.sp,
+                        color = Color.Gray,
+                        textAlign = textAlign,
+                        maxLines = 1,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    innerTextField()
                 }
             }
-    }
+        }
+    )
 }
