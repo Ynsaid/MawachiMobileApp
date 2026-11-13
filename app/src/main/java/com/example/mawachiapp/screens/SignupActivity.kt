@@ -209,10 +209,11 @@ private fun SignupScreen(
 
         Text(
             text = stringResource(R.string.create_acc),
+
             fontFamily = changaBold,
             fontSize = 34.sp,
             color = oliveGreen,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.End,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -222,6 +223,7 @@ private fun SignupScreen(
             value = name,
             onValueChange = { name = it },
             hint = stringResource(R.string.complete_name),
+            textAlign = TextAlign.End,
             enabled = !isLoading
         )
 
@@ -231,34 +233,13 @@ private fun SignupScreen(
             value = email,
             onValueChange = { email = it },
             hint = stringResource(R.string.email),
+            textAlign = TextAlign.End,
             keyboardType = KeyboardType.Email,
             enabled = !isLoading
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SignupInput(
-                value = number,
-                onValueChange = { number = it },
-                hint = stringResource(R.string.number),
-                keyboardType = KeyboardType.Phone,
-                enabled = !isLoading,
-                modifier = Modifier.weight(1f)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Image(
-                painter = painterResource(R.drawable.algeria),
-                contentDescription = "علم الجزائر"
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         SignupInput(
             value = password,
@@ -329,8 +310,8 @@ private fun SignupScreen(
         Text(
             text = stringResource(R.string.have_account),
             fontFamily = changaMedium,
-            fontSize = 24.sp,
-            color = Color.Black,
+            fontSize = 16.sp,
+            color = Color.Gray,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
