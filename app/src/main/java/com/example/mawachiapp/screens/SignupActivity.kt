@@ -135,6 +135,7 @@ class SignupActivity : ComponentActivity() {
                     .set(userMap)
                     .addOnSuccessListener {
                         isLoading = false
+                        auth.signOut()
 
                         showToast("Registration Successful")
                         openLogin()
