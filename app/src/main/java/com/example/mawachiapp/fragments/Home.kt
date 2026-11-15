@@ -227,39 +227,7 @@ fun RealHomeScreen(
             }
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Surface(
-                color = MarketLightGreen,
-                shape = RoundedCornerShape(18.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(15.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = null,
-                        tint = MarketGreen
-                    )
 
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Column {
-                        Text(
-                            text = "تسوّق باطمئنان",
-                            color = MarketGreen,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Text(
-                            text = "عاين الماشية وتحقق من معلومات البائع قبل الدفع.",
-                            color = MarketMuted,
-                            fontSize = 11.sp
-                        )
-                    }
-                }
-            }
-        }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
             Row(
