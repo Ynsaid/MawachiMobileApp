@@ -47,7 +47,7 @@ class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<Cart
         }
 
         holder.itemQuantityPlus.setOnClickListener {
-            val currentQty = item.quantity.toIntOrNull() ?: 1
+            val currentQty = item.quantity?.toIntOrNull() ?: 1
             val updatedQty = currentQty + 1
             item.quantity = updatedQty.toString()
             holder.itemQuantity.text = item.quantity
@@ -55,7 +55,7 @@ class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<Cart
 
         // Handle - button
         holder.itemQuantityMinus.setOnClickListener {
-            val currentQty = item.quantity.toIntOrNull() ?: 1
+            val currentQty = item.quantity?.toIntOrNull() ?: 1
             val updatedQty = if (currentQty > 1) currentQty - 1 else 1
             item.quantity = updatedQty.toString()
             holder.itemQuantity.text = item.quantity

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -74,6 +75,7 @@ internal fun MarketImage(
             model = url,
             contentDescription = description,
             contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
             modifier = Modifier.matchParentSize()
         )
     }

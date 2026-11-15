@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
@@ -34,23 +33,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mawachiapp.R
-import com.example.mawachiapp.fragments.RealCartScreen
-import com.example.mawachiapp.fragments.RealHomeScreen
-import com.example.mawachiapp.fragments.RealSettingsScreen
+import com.example.mawachiapp.classes.Product
 import com.example.mawachiapp.fragments.MarketBackground
 import com.example.mawachiapp.fragments.MarketFont
 import com.example.mawachiapp.fragments.MarketGreen
 import com.example.mawachiapp.fragments.MarketLightGreen
 import com.example.mawachiapp.fragments.MarketMuted
 import com.example.mawachiapp.fragments.MarketText
+import com.example.mawachiapp.fragments.ProductListScreen
+import com.example.mawachiapp.fragments.RealCartScreen
+import com.example.mawachiapp.fragments.RealHomeScreen
+import com.example.mawachiapp.fragments.RealSettingsScreen
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : ComponentActivity() {
@@ -106,13 +106,8 @@ class HomeActivity : ComponentActivity() {
                     LocalLayoutDirection provides LayoutDirection.Rtl
                 ) {
                     MarketApp(
-                        onOpenAnimals = {
-                            startActivity(
-                                Intent(
-                                    this,
-                                    ListOfAnimalsActivity::class.java
-                                )
-                            )
+                        onOpenCategory = { category ->
+                            // سيتم تمرير الفئة إلى ProductListScreen.
                         },
                         onSessionEnded = {
                             FirebaseAuth.getInstance().signOut()
@@ -139,11 +134,21 @@ class HomeActivity : ComponentActivity() {
 
 @Composable
 private fun MarketApp(
-    onOpenAnimals: () -> Unit,
+    onOpenCategory: (String) -> Unit,
     onSessionEnded: () -> Unit
 ) {
+    val context = LocalContext.current
+
     var selectedTab by rememberSaveable {
         mutableStateOf(0)
+    }
+
+    var selectedCategory by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var showProducts by rememberSaveable {
+        mutableStateOf(false)
     }
 
     val tabs = listOf(
@@ -164,7 +169,10 @@ private fun MarketApp(
                 tabs.forEachIndexed { index, tab ->
                     NavigationBarItem(
                         selected = selectedTab == index,
-                        onClick = { selectedTab = index },
+                        onClick = {
+                            selectedTab = index
+                            showProducts = false
+                        },
                         icon = {
                             Icon(
                                 imageVector = tab.second,
@@ -190,18 +198,48 @@ private fun MarketApp(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .safeDrawingPadding()
         ) {
-            when (selectedTab) {
-                0 -> RealHomeScreen(
-                    onOpenAnimals = onOpenAnimals
-                )
+            when {
+                selectedTab == 0 && showProducts -> {
+                    ProductListScreen(
+                        category = selectedCategory,
+                        onBack = {
+                            showProducts = false
+                        },
+                        onOpenProduct = { product ->
+                            val intent = Intent(
+                                context,
+                                ProductDetailsActivity::class.java
+                            )
 
-                1 -> RealCartScreen()
+                            intent.putExtra(
+                                "product",
+                                product
+                            )
 
-                2 -> RealSettingsScreen(
-                    onSessionEnded = onSessionEnded
-                )
+                            context.startActivity(intent)
+                        }
+                    )
+                }
+
+                selectedTab == 0 -> {
+                    RealHomeScreen(
+                        onOpenCategory = { category ->
+                            selectedCategory = category
+                            showProducts = true
+                        }
+                    )
+                }
+
+                selectedTab == 1 -> {
+                    RealCartScreen()
+                }
+
+                else -> {
+                    RealSettingsScreen(
+                        onSessionEnded = onSessionEnded
+                    )
+                }
             }
         }
     }

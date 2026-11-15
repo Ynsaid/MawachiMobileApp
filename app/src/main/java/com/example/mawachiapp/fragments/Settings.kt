@@ -15,8 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.DeleteOutline
+import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -194,7 +194,7 @@ fun RealSettingsScreen(
         SettingsAction(
             title = "تسجيل الخروج",
             subtitle = "الخروج من الحساب على هذا الجهاز",
-            icon = Icons.AutoMirrored.Outlined.ExitToApp,
+            icon = Icons.Outlined.ExitToApp,
             color = MarketGreen,
             onClick = { showLogout = true }
         )

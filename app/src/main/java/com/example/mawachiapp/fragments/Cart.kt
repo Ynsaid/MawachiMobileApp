@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,15 +46,18 @@ import com.example.mawachiapp.classes.Item
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.math.BigDecimal
-import androidx.core.content.edit
 
 private fun itemSubtotal(item: Item): BigDecimal? {
-    val cleanPrice = item.price.replace("[^0-9.]".toRegex(), "").trim()
-    val price = cleanPrice.toBigDecimalOrNull()
+    val priceText = item.price?.trim()
         ?: return null
 
-    val cleanQuantity = item.quantity.replace("[^0-9]".toRegex(), "").trim()
-    val quantity = cleanQuantity.toIntOrNull()
+    val quantityText = item.quantity?.trim()
+        ?: return null
+
+    val price = priceText.toBigDecimalOrNull()
+        ?: return null
+
+    val quantity = quantityText.toIntOrNull()
         ?: return null
 
     if (price < BigDecimal.ZERO || quantity <= 0) {
@@ -104,7 +108,10 @@ fun RealCartScreen() {
 
                 require(
                     loaded.all { item ->
-                        item.name.isNotBlank()
+                        !item.name.isNullOrBlank() &&
+                                item.price != null &&
+                                item.quantity != null &&
+                                item.image != null
                     }
                 )
 
@@ -140,12 +147,12 @@ fun RealCartScreen() {
             removeAt(index)
         }
 
-        preferences.edit {
-            putString(
+        preferences.edit()
+            .putString(
                 "cart_items",
                 gson.toJson(updated)
             )
-        }
+            .apply()
 
         cartItems = updated
     }
@@ -193,9 +200,9 @@ fun RealCartScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 18.dp)
     ) {
-
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "سلتي",
@@ -219,7 +226,7 @@ fun RealCartScreen() {
                 items = cartItems
             ) { index, item ->
                 Surface(
-                    color = androidx.compose.ui.graphics.Color.White,
+                    color = Color.White,
                     shape = RoundedCornerShape(22.dp)
                 ) {
                     Column(
@@ -242,18 +249,22 @@ fun RealCartScreen() {
                                 modifier = Modifier.weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Text(
-                                    text = item.name,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                item.name?.let {
+                                    Text(
+                                        text = it,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
 
-                                Text(
-                                    text = item.location,
-                                    color = MarketMuted,
-                                    fontSize = 11.sp
-                                )
+                                item.location?.let {
+                                    Text(
+                                        text = it,
+                                        color = MarketMuted,
+                                        fontSize = 11.sp
+                                    )
+                                }
 
                                 Text(
                                     text = "الكمية: ${item.quantity}",
@@ -323,9 +334,7 @@ fun RealCartScreen() {
             ) {
                 Text(
                     text = "المبلغ الإجمالي",
-                    color = androidx.compose.ui.graphics.Color.White.copy(
-                        alpha = 0.8f
-                    ),
+                    color = Color.White.copy(alpha = 0.8f),
                     fontSize = 12.sp
                 )
 

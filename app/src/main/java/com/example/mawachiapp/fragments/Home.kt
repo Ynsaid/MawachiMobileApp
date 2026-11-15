@@ -1,6 +1,5 @@
 package com.example.mawachiapp.fragments
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Card
@@ -45,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -63,11 +63,10 @@ import androidx.compose.ui.unit.sp
 import com.example.mawachiapp.classes.Animal
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun RealHomeScreen(
-    onOpenAnimals: () -> Unit
+    onOpenCategory: (String) -> Unit
 ) {
     var animals by remember {
         mutableStateOf<List<Animal>>(emptyList())
@@ -86,7 +85,7 @@ fun RealHomeScreen(
     }
 
     var reloadKey by remember {
-        mutableIntStateOf(0)
+        mutableStateOf(0)
     }
 
     DisposableEffect(reloadKey) {
@@ -161,6 +160,12 @@ fun RealHomeScreen(
                         fontWeight = FontWeight.Bold,
                         color = MarketGreen
                     )
+
+                    Text(
+                        text = "اكتشف المواشي وتصفح العروض",
+                        color = MarketMuted,
+                        fontSize = 11.sp
+                    )
                 }
 
                 Surface(
@@ -217,12 +222,44 @@ fun RealHomeScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 AnimalCarousel(
                     animals = animals.take(5),
-                    onClick = onOpenAnimals
+                    onOpenCategory = onOpenCategory
                 )
             }
         }
 
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Surface(
+                color = MarketLightGreen,
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = MarketGreen
+                    )
 
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column {
+                        Text(
+                            text = "تسوّق باطمئنان",
+                            color = MarketGreen,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "عاين الماشية وتحقق من معلومات البائع قبل الدفع.",
+                            color = MarketMuted,
+                            fontSize = 11.sp
+                        )
+                    }
+                }
+            }
+        }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
             Row(
@@ -231,13 +268,13 @@ fun RealHomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "تصفح المواشي",
+                    text = "تصفح الفئات",
                     style = MaterialTheme.typography.titleMedium
                 )
 
                 if (!loading && error == null) {
                     Text(
-                        text = "${filtered.size} أنواع",
+                        text = "${filtered.size} فئات",
                         color = MarketMuted,
                         fontSize = 12.sp
                     )
@@ -286,7 +323,7 @@ fun RealHomeScreen(
                         icon = Icons.Outlined.Search,
                         title = "لا توجد نتائج",
                         message = if (query.isBlank()) {
-                            "لم تتم إضافة أنواع إلى السوق بعد."
+                            "لم تتم إضافة فئات إلى السوق بعد."
                         } else {
                             "جرّب كتابة اسم آخر."
                         }
@@ -300,7 +337,7 @@ fun RealHomeScreen(
                 ) { animal ->
                     AnimalCategoryCard(
                         animal = animal,
-                        onClick = onOpenAnimals
+                        onOpenCategory = onOpenCategory
                     )
                 }
             }
@@ -311,7 +348,7 @@ fun RealHomeScreen(
 @Composable
 private fun AnimalCarousel(
     animals: List<Animal>,
-    onClick: () -> Unit
+    onOpenCategory: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(
         pageCount = { animals.size }
@@ -332,7 +369,7 @@ private fun AnimalCarousel(
             key2 = animals.size
         ) {
             while (true) {
-                delay(5000.milliseconds)
+                delay(5000)
 
                 pagerState.animateScrollToPage(
                     (pagerState.currentPage + 1) % animals.size
@@ -356,7 +393,13 @@ private fun AnimalCarousel(
                     .clickable(
                         interactionSource = interaction,
                         indication = null,
-                        onClick = onClick
+                        onClick = {
+                            onOpenCategory(
+                                animal.category
+                                    ?: animal.name
+                                    ?: ""
+                            )
+                        }
                     )
             ) {
                 MarketImage(
@@ -453,10 +496,16 @@ private fun AnimalCarousel(
 @Composable
 private fun AnimalCategoryCard(
     animal: Animal,
-    onClick: () -> Unit
+    onOpenCategory: (String) -> Unit
 ) {
     Card(
-        onClick = onClick,
+        onClick = {
+            onOpenCategory(
+                animal.category
+                    ?: animal.name
+                    ?: ""
+            )
+        },
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
