@@ -45,6 +45,7 @@ import com.example.mawachiapp.classes.Item
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.math.BigDecimal
+import androidx.core.content.edit
 
 private fun itemSubtotal(item: Item): BigDecimal? {
     val cleanPrice = item.price.replace("[^0-9.]".toRegex(), "").trim()
@@ -103,10 +104,7 @@ fun RealCartScreen() {
 
                 require(
                     loaded.all { item ->
-                        !item.name.isNullOrBlank() &&
-                                item.price != null &&
-                                item.quantity != null &&
-                                item.image != null
+                        item.name.isNotBlank()
                     }
                 )
 
@@ -142,12 +140,12 @@ fun RealCartScreen() {
             removeAt(index)
         }
 
-        preferences.edit()
-            .putString(
+        preferences.edit {
+            putString(
                 "cart_items",
                 gson.toJson(updated)
             )
-            .apply()
+        }
 
         cartItems = updated
     }
