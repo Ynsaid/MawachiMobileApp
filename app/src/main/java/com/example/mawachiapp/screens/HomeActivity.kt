@@ -1,47 +1,208 @@
 package com.example.mawachiapp.screens
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.example.mawachiapp.fragments.Cart
-import com.example.mawachiapp.fragments.Home
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mawachiapp.R
-import com.example.mawachiapp.fragments.Settings
-import com.example.mawachiapp.databinding.ActivityHomeBinding
+import com.example.mawachiapp.fragments.RealCartScreen
+import com.example.mawachiapp.fragments.RealHomeScreen
+import com.example.mawachiapp.fragments.RealSettingsScreen
+import com.example.mawachiapp.fragments.MarketBackground
+import com.example.mawachiapp.fragments.MarketFont
+import com.example.mawachiapp.fragments.MarketGreen
+import com.example.mawachiapp.fragments.MarketLightGreen
+import com.example.mawachiapp.fragments.MarketMuted
+import com.example.mawachiapp.fragments.MarketText
+import com.google.firebase.auth.FirebaseAuth
 
-class HomeActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityHomeBinding
+class HomeActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        // set Home fragment as default
-        loadFragment(Home())
-        // set bottom navigation
-        binding.bottomNavigation.selectedItemId = R.id.home_page
-        // set bottom navigation item selected listener
-        binding.bottomNavigation.setOnItemSelectedListener{ item ->
-            when(item.itemId) {
-                R.id.home_page -> {
-                    loadFragment(Home())
-                    true
+        setContent {
+            val baseTypography = Typography()
+
+            MaterialTheme(
+                colorScheme = lightColorScheme(
+                    primary = MarketGreen,
+                    onPrimary = Color.White,
+                    background = MarketBackground,
+                    surface = Color.White,
+                    onSurface = MarketText,
+                    surfaceVariant = MarketLightGreen,
+                    onSurfaceVariant = MarketMuted,
+                    error = Color(0xFFB54E46)
+                ),
+                typography = Typography(
+                    titleLarge = baseTypography.titleLarge.copy(
+                        fontFamily = MarketFont,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    titleMedium = baseTypography.titleMedium.copy(
+                        fontFamily = MarketFont,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    bodyLarge = baseTypography.bodyLarge.copy(
+                        fontFamily = MarketFont
+                    ),
+                    bodyMedium = baseTypography.bodyMedium.copy(
+                        fontFamily = MarketFont
+                    ),
+                    bodySmall = baseTypography.bodySmall.copy(
+                        fontFamily = MarketFont
+                    ),
+                    labelLarge = baseTypography.labelLarge.copy(
+                        fontFamily = MarketFont
+                    ),
+                    labelMedium = baseTypography.labelMedium.copy(
+                        fontFamily = MarketFont
+                    ),
+                    labelSmall = baseTypography.labelSmall.copy(
+                        fontFamily = MarketFont
+                    )
+                )
+            ) {
+                CompositionLocalProvider(
+                    LocalLayoutDirection provides LayoutDirection.Rtl
+                ) {
+                    MarketApp(
+                        onOpenAnimals = {
+                            startActivity(
+                                Intent(
+                                    this,
+                                    ListOfAnimalsActivity::class.java
+                                )
+                            )
+                        },
+                        onSessionEnded = {
+                            FirebaseAuth.getInstance().signOut()
+
+                            startActivity(
+                                Intent(
+                                    this,
+                                    LoginActivity::class.java
+                                ).apply {
+                                    flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                                                Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                            )
+
+                            finish()
+                        }
+                    )
                 }
-                R.id.cart_page -> {
-                    loadFragment(Cart())
-                    true
-                }
-                R.id.settings_page -> {
-                    loadFragment(Settings())
-                    true
-                }
-                else -> { false }
             }
         }
     }
-    private fun loadFragment(fragment: Fragment) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit()
+}
+
+@Composable
+private fun MarketApp(
+    onOpenAnimals: () -> Unit,
+    onSessionEnded: () -> Unit
+) {
+    var selectedTab by rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    val tabs = listOf(
+        "الرئيسية" to Icons.Outlined.Home,
+        "السلة" to Icons.Outlined.ShoppingCart,
+        "الإعدادات" to Icons.Outlined.Settings
+    )
+
+    Scaffold(
+        containerColor = MarketBackground,
+        contentWindowInsets = WindowInsets.safeDrawing
+            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
+        bottomBar = {
+            NavigationBar(
+                containerColor = Color.White,
+                tonalElevation = 0.dp
+            ) {
+                tabs.forEachIndexed { index, tab ->
+                    NavigationBarItem(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        icon = {
+                            Icon(
+                                imageVector = tab.second,
+                                contentDescription = null
+                            )
+                        },
+                        label = {
+                            Text(text = tab.first)
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MarketGreen,
+                            selectedTextColor = MarketGreen,
+                            indicatorColor = MarketLightGreen,
+                            unselectedIconColor = MarketMuted,
+                            unselectedTextColor = MarketMuted
+                        )
+                    )
+                }
+            }
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .safeDrawingPadding()
+        ) {
+            when (selectedTab) {
+                0 -> RealHomeScreen(
+                    onOpenAnimals = onOpenAnimals
+                )
+
+                1 -> RealCartScreen()
+
+                2 -> RealSettingsScreen(
+                    onSessionEnded = onSessionEnded
+                )
+            }
+        }
     }
 }

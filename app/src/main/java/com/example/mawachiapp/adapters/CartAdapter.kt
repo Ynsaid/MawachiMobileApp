@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mawachiapp.classes.Item
 import com.example.mawachiapp.R
 
@@ -14,6 +16,7 @@ class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<Cart
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        val itemImg: ImageView? = itemView.findViewById(R.id.itemImg)
         val itemName: TextView = itemView.findViewById(R.id.itemName)
         val itemAgeWeightLocation: TextView = itemView.findViewById(R.id.itemAgeWeightLocation)
         val itemPrice: TextView = itemView.findViewById(R.id.itemPrice)
@@ -39,10 +42,14 @@ class CartAdapter(private val cartItems: List<Item>) : RecyclerView.Adapter<Cart
         holder.itemPrice.text = item.price
         holder.itemQuantity.text = item.quantity
 
+        if (!item.image.isNullOrEmpty()) {
+            holder.itemImg?.let { Glide.with(holder.itemView.context).load(item.image).into(it) }
+        }
+
         holder.itemQuantityPlus.setOnClickListener {
             val currentQty = item.quantity.toIntOrNull() ?: 1
             val updatedQty = currentQty + 1
-            item.quantity = updatedQty.toString() // Make sure quantity is a var in your model
+            item.quantity = updatedQty.toString()
             holder.itemQuantity.text = item.quantity
         }
 

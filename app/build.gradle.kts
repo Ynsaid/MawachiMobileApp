@@ -64,4 +64,8 @@ dependencies {
     implementation(libs.google.gson)
     annotationProcessor(libs.compiler)
 
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material:material-icons-extended")
+
 }

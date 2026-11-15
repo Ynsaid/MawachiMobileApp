@@ -9,34 +9,42 @@ import com.example.mawachiapp.R
 import com.example.mawachiapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private  lateinit var binding: ActivityMainBinding
-    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var binding: ActivityMainBinding
+    private var mediaPlayer: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.sheep_sound)
-        mediaPlayer.start()
-        Handler(mainLooper).postDelayed({
+        try {
+            mediaPlayer = MediaPlayer.create(this, R.raw.sheep_sound)
+            mediaPlayer?.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-            if(mediaPlayer.isPlaying){
-                mediaPlayer.stop()
-                mediaPlayer.release()
+        Handler(mainLooper).postDelayed({
+            mediaPlayer?.let { mp ->
+                if (mp.isPlaying) {
+                    mp.stop()
+                }
+                mp.release()
             }
+            mediaPlayer = null
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
-
-        },5000)
-
-
+        }, 5000)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(::mediaPlayer.isInitialized && mediaPlayer.isPlaying){
-            mediaPlayer.stop()
-            mediaPlayer.release()
+        mediaPlayer?.let { mp ->
+            if (mp.isPlaying) {
+                mp.stop()
+            }
+            mp.release()
         }
+        mediaPlayer = null
     }
 }
